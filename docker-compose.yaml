@@ -1,0 +1,47 @@
+services:
+  postgres:
+    container_name: postgres-sql-note-app
+    image: postgres:latest
+    environment:
+      POSTGRES_USER: username,
+      POSTGRES_PASSWORD: password,
+      POSTGRES_DB: note_app_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres:/var/lib/postgres/data
+    networks:
+      - note-app-network
+
+  note-backend:
+    container_name: note-app-backend
+    build:
+      context: ./NotesApp
+      dockerfile: Dockerfile
+    env_file:
+      - ./NotesApp/.env
+    ports:
+      - "8080:8080"
+    networks:
+      - note-app-network
+    depends_on:
+      - postgres
+
+  note_app_frontend:
+    container_name: react-note-app
+    build:
+      context: ./Frontend
+      dockerfile: Dockerfile
+    env_file:
+      - ./Frontend/secure-notes-react/.env.development
+    ports:
+      - "5173:5173"
+    networks:
+      - note-app-network
+
+volumes:
+  postgres:
+
+networks:
+  note-app-network:
+    driver: bridge

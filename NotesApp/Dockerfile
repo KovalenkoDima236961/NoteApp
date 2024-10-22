@@ -1,7 +1,11 @@
-FROM ubuntu:latest
+FROM openjdk:21-jdk-slim
 LABEL authors="Dima"
 
+WORKDIR /app
+
+COPY target/notes-0.0.1-SNAPSHOT.jar /app/note-app.jar
+
+EXPOSE 8080
 
 
-
-ENTRYPOINT ["top", "-b"]
+CMD ["java", "-jar", "note-app.jar"]
